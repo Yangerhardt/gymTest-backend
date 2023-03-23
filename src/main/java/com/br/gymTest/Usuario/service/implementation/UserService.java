@@ -60,6 +60,7 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public void deleteUser(UUID id) {
+        findUserById(id);
         repository.deleteById(id);
     }
 }

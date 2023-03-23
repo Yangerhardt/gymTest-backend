@@ -2,7 +2,7 @@ package com.br.gymTest.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class DefaultAbstractException extends RuntimeException {
+public abstract class DefaultAbstractException extends RuntimeException {
     private  LogLevel logLevel = LogLevel.ERROR;
     private  HttpStatus status = HttpStatus.BAD_REQUEST;
 

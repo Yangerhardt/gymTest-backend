@@ -2,6 +2,7 @@ package com.br.gymTest.Util;
 
 import com.br.gymTest.Usuario.model.User;
 import com.br.gymTest.Usuario.model.dto.UserDTO;
+import com.br.gymTest.exceptions.BasicException;
 import com.br.gymTest.exceptions.DefaultAbstractException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,7 @@ public class Util {
 
     public static void logger(String method, Class className, String domain,
                               Exception exception) {
-        logger(method, className, domain, new DefaultAbstractException(exception.getMessage()), Optional.empty());
+        logger(method, className, domain, new BasicException(exception.getMessage()), Optional.empty());
     }
 
     public static User convertToUser (UserDTO userDTO){

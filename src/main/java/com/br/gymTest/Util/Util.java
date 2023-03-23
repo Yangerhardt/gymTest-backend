@@ -2,18 +2,53 @@ package com.br.gymTest.Util;
 
 import com.br.gymTest.Usuario.model.User;
 import com.br.gymTest.Usuario.model.dto.UserDTO;
-import com.br.gymTest.Usuario.service.implementation.UserService;
+import com.br.gymTest.exceptions.DefaultAbstractException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.Date;
-import java.util.UUID;
+import java.util.Optional;
 
+import static com.br.gymTest.exceptions.LogLevel.*;
+
+
+@Service
+@Slf4j
 public class Util {
 
-    @Autowired
-    private static UserService userService;
+    public static void logger(String method, Class className, String domain,
+                              DefaultAbstractException exception, Optional<Object> value){
+        String message = MessageFormat.format(
+                "{0} from class: [{1}] in domain {2} throwed: {3}\nPayload: {4}",
+                method,
+                className.getName(),
+                domain.toUpperCase(),
+                exception.getMessage(),
+                value.orElse("null")
+        );
+
+        switch (exception.getLogLevel()) {
+            case INFO:
+                log.info(message);
+                break;
+            case WARN:
+                log.warn(message);
+                break;
+            case ERROR:
+                log.error(message);
+                break;
+            case DEBUG:
+                log.debug(message);
+        }
+    }
+
+    public static void logger(String method, Class className, String domain,
+                              Exception exception) {
+        logger(method, className, domain, new DefaultAbstractException(exception.getMessage()), Optional.empty());
+    }
 
     public static User convertToUser (UserDTO userDTO){
         User user = new User();

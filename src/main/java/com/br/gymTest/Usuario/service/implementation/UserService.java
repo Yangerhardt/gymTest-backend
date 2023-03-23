@@ -5,11 +5,12 @@ import com.br.gymTest.Usuario.model.dto.UserDTO;
 import com.br.gymTest.Usuario.repository.UserRepository;
 import com.br.gymTest.Usuario.service.UserServiceInterface;
 import com.br.gymTest.Util.Util;
-import com.br.gymTest.exceptions.UserNotFoundException;
+import com.br.gymTest.exceptions.LogLevel;
+import com.br.gymTest.Usuario.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,9 +36,9 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public UserDTO findUserById(UUID id) {
-        Optional<User> user = Optional.ofNullable(repository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found")));
-        UserDTO userDTO = new UserDTO(user.get());
-        return userDTO;
+        User user = (repository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found", HttpStatus.NOT_FOUND, LogLevel.ERROR)));
+        return new UserDTO(user);
     }
 
     @Override
@@ -47,7 +48,8 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public UserDTO updateUser(UUID id, UserDTO userDTO) {
-        User user = repository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+        User user = repository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found", HttpStatus.NOT_FOUND, LogLevel.ERROR));
         userDTO.setId(id);
         user = Util.convertToUser(userDTO);
 

@@ -14,6 +14,6 @@ public interface UserServiceInterface {
     List<UserDTO> findAllUsers();
     UserDTO findUserById(UUID id);
     User createNewUser(User user);
-    UserDTO updateUser(UUID ID,UserDTO userDTO) throws IOException;
+    UserDTO updateUser(UUID ID,UserDTO userDTO);
     void deleteUser(UUID id);
 }

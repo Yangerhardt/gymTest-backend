@@ -1,5 +1,6 @@
 package com.br.gymTest.Usuario.service.implementation;
 
+import com.br.gymTest.Usuario.exception.MissingParametersException;
 import com.br.gymTest.Usuario.model.User;
 import com.br.gymTest.Usuario.model.dto.UserDTO;
 import com.br.gymTest.Usuario.repository.UserRepository;
@@ -21,6 +22,13 @@ public class UserService implements UserServiceInterface {
 
     @Autowired
     private UserRepository repository;
+
+    private final UserRepository userRepository;
+
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public List<UserDTO> findAllUsers() {

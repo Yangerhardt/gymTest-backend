@@ -1,7 +1,7 @@
 package com.br.gymTest.Usuario.controller;
 
 import com.br.gymTest.Usuario.handler.DefaultHandler;
-import com.br.gymTest.Usuario.handler.UserNotFoundExceptionHandler;
+import com.br.gymTest.Usuario.handler.InternalServerErrorHandler;
 import com.br.gymTest.Usuario.model.User;
 import com.br.gymTest.Usuario.model.dto.UserDTO;
 import com.br.gymTest.Usuario.service.implementation.UserService;
@@ -34,10 +34,10 @@ public class UserController {
             return ResponseEntity.ok(userService.findAllUsers());
         } catch (DefaultAbstractException ex) {
             Util.logger("findAllUsers", this.getClass(), USER_DOMAIN, ex);
-            throw ex;
+            return InternalServerErrorHandler.handleException(ex);
         } catch (Exception ex) {
             Util.logger("findAllUsers", this.getClass(), USER_DOMAIN, ex);
-            throw ex;
+            return DefaultHandler.handleException(ex);
         }
     }
 
@@ -49,7 +49,7 @@ public class UserController {
             return ResponseEntity.ok(userDTO);
         } catch (UserNotFoundException ex) {
             Util.logger("getUserById", this.getClass(), USER_DOMAIN, ex, Optional.of(id));
-            return UserNotFoundExceptionHandler.handleException(ex);
+            return InternalServerErrorHandler.handleException(ex);
         } catch (Exception ex) {
             Util.logger("getUserById", this.getClass(), USER_DOMAIN, ex);
             return DefaultHandler.handleException(ex);
@@ -60,11 +60,12 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> createUser (@Valid @RequestBody User user) {
         try {
-            User newUser = userService.createNewUser(user);
+            Object newUser = userService.createNewUser(user);
             return ResponseEntity.status(HttpStatus.OK).body(newUser); // TODO modificar para retornar um DTO
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } // TODO
+        } catch (Exception ex) {
+            Util.logger("createNewUser", this.getClass(), USER_DOMAIN, ex);
+            return DefaultHandler.handleException(ex);
+        }
     }
 
     @ApiResponse(message = "Alters a user", code = 200)
@@ -73,11 +74,13 @@ public class UserController {
         try {
             UserDTO updatedUserDTO = userService.updateUser(id, userDTO);
             return ResponseEntity.status(HttpStatus.OK).body(updatedUserDTO);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } // TODO
+        } catch (UserNotFoundException ex) {
+            Util.logger("updateUser", this.getClass(), USER_DOMAIN, ex, Optional.of(id));
+            return InternalServerErrorHandler.handleException(ex);
+        } catch (Exception ex) {
+            Util.logger("createNewUser", this.getClass(), USER_DOMAIN, ex);
+            return DefaultHandler.handleException(ex);
+        }
     }
 
     @ApiResponse(message = "Removes a user", code = 200)
@@ -86,10 +89,11 @@ public class UserController {
         try {
             userService.deleteUser(id);
             return ResponseEntity.status(HttpStatus.OK).body("User deleted.");
-        } catch (IllegalArgumentException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         } catch (UserNotFoundException ex) {
-            return UserNotFoundExceptionHandler.handleException(ex);
-        } //TODO
+            return InternalServerErrorHandler.handleException(ex);
+        } catch (Exception ex) {
+            Util.logger("createNewUser", this.getClass(), USER_DOMAIN, ex);
+            return DefaultHandler.handleException(ex);
+        }
     }
 }

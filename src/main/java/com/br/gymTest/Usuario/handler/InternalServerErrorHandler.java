@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class UserNotFoundExceptionHandler extends DefaultHandler{
+public class InternalServerErrorHandler extends DefaultHandler{
 
     @ExceptionHandler(UserNotFoundException.class)
     public static ResponseEntity<ErrorResponse> handleException(Exception ex) {

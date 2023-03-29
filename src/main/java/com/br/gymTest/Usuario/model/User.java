@@ -1,24 +1,22 @@
 package com.br.gymTest.Usuario.model;
 
 import com.br.gymTest.Usuario.model.dto.UserDTO;
-import com.br.gymTest.archive.Model;
+import com.br.gymTest.audit.model.DefaultAuditingEntity;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.UUID;
 
-@EqualsAndHashCode(callSuper = true)
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Table(name = "users")
 @ApiModel
-public class User extends Model {
+public class User extends DefaultAuditingEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,11 +32,6 @@ public class User extends Model {
     @Column(name = "phone", nullable = false, length = 55)
     private String phone;
 
-    @Override
-    public String teste() {
-        return "Teste de herança";
-    }
-
     public User(UserDTO userDTO) {
         this.id = UUID.randomUUID();
         this.name = userDTO.getName();
@@ -47,4 +40,5 @@ public class User extends Model {
         this.cpf = userDTO.getCpf();
         this.phone = userDTO.getPhone();
     }
+
 }

@@ -4,11 +4,13 @@ import com.br.gymTest.Usuario.handler.DefaultHandler;
 import com.br.gymTest.Usuario.handler.InternalServerErrorHandler;
 import com.br.gymTest.Usuario.model.User;
 import com.br.gymTest.Usuario.model.dto.UserDTO;
+import com.br.gymTest.Usuario.service.UserServiceInterface;
 import com.br.gymTest.Usuario.service.implementation.UserService;
 import com.br.gymTest.Util.Util;
 import com.br.gymTest.exceptions.DefaultAbstractException;
 import com.br.gymTest.Usuario.exception.UserNotFoundException;
 import io.swagger.annotations.ApiResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +22,12 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
+@RequiredArgsConstructor
 public class UserController {
 
     private static final String USER_DOMAIN = "user";
 
-    @Autowired
-    private UserService userService;
+    private final UserServiceInterface userService;
 
     @ApiResponse(message = "Return all users", code = 200)
     @GetMapping

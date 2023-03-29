@@ -8,7 +8,9 @@ import com.br.gymTest.Usuario.service.UserServiceInterface;
 import com.br.gymTest.Util.Util;
 import com.br.gymTest.exceptions.LogLevel;
 import com.br.gymTest.Usuario.exception.UserNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -18,21 +20,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class UserService implements UserServiceInterface {
 
-    @Autowired
-    private UserRepository repository;
-
-    private final UserRepository userRepository;
-
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final UserRepository repository;
 
     @Override
     public List<UserDTO> findAllUsers() {
-        List<User> all = repository.findAll();
+        List<User> all = repository.findAll("users");
         List<UserDTO> allDTO = new ArrayList<UserDTO>();
 
         for (User user : all) {
@@ -44,7 +39,7 @@ public class UserService implements UserServiceInterface {
 
     @Override
     public UserDTO findUserById(UUID id) {
-        User user = (repository.findById(id)
+        User user = (repository.findById("users", id)
                 .orElseThrow(() -> new UserNotFoundException("User not found", HttpStatus.NOT_FOUND, LogLevel.ERROR)));
         return new UserDTO(user);
     }
@@ -69,6 +64,6 @@ public class UserService implements UserServiceInterface {
     @Override
     public void deleteUser(UUID id) {
         findUserById(id);
-        repository.deleteById(id);
+        repository.deleteById("users", id);
     }
 }

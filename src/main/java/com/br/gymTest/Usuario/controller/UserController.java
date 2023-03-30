@@ -2,6 +2,7 @@ package com.br.gymTest.Usuario.controller;
 
 import com.br.gymTest.Usuario.handler.DefaultHandler;
 import com.br.gymTest.Usuario.handler.InternalServerErrorHandler;
+import com.br.gymTest.Usuario.mapper.UserMapper;
 import com.br.gymTest.Usuario.model.User;
 import com.br.gymTest.Usuario.model.dto.UserDTO;
 import com.br.gymTest.Usuario.service.UserServiceInterface;
@@ -10,6 +11,7 @@ import com.br.gymTest.Util.Util;
 import com.br.gymTest.exceptions.DefaultAbstractException;
 import com.br.gymTest.Usuario.exception.UserNotFoundException;
 import io.swagger.annotations.ApiResponse;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,16 +24,17 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
-@RequiredArgsConstructor
 public class UserController {
 
     private static final String USER_DOMAIN = "user";
 
-    private final UserServiceInterface userService;
+    @Autowired
+    private UserServiceInterface userService;
+
 
     @ApiResponse(message = "Return all users", code = 200)
     @GetMapping
-    public ResponseEntity<?> getUsers () {
+    public ResponseEntity<?> getAllUsers () {
         try {
             return ResponseEntity.ok(userService.findAllUsers());
         } catch (DefaultAbstractException ex) {
@@ -60,9 +63,9 @@ public class UserController {
 
     @ApiResponse(message = "Creates a new user", code = 201)
     @PostMapping
-    public ResponseEntity<?> createUser (@Valid @RequestBody User user) {
+    public ResponseEntity<?> createUser (@Valid @RequestBody UserDTO userDTO) {
         try {
-            Object newUser = userService.createNewUser(user);
+            Object newUser = userService.createNewUser(userDTO);
             return ResponseEntity.status(HttpStatus.OK).body(newUser); // TODO modificar para retornar um DTO
         } catch (Exception ex) {
             Util.logger("createNewUser", this.getClass(), USER_DOMAIN, ex);

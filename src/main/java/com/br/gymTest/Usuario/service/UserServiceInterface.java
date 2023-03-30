@@ -9,11 +9,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public interface UserServiceInterface {
 
     List<UserDTO> findAllUsers();
     UserDTO findUserById(UUID id);
-    User createNewUser(User user);
-    UserDTO updateUser(UUID ID,UserDTO userDTO);
+    UserDTO createNewUser(UserDTO userDTO);
+    UserDTO updateUser(UUID ID, UserDTO userDTO);
     void deleteUser(UUID id);
 }
